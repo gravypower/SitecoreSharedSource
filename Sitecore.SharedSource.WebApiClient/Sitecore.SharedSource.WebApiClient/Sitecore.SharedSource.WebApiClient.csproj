@@ -35,10 +35,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="log4net, Version=1.2.11.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\log4net.2.0.0\lib\net40-full\log4net.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.4.5.11\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -59,7 +55,6 @@
     <Compile Include="Data\SitecoreExpressionQuery.cs" />
     <Compile Include="Data\SitecoreItemQuery.cs" />
     <Compile Include="Data\SitecoreQuery.cs" />
-    <Compile Include="Diagnostics\LogFactory.cs" />
     <Compile Include="Entities\WebApiError.cs" />
     <Compile Include="Entities\WebApiField.cs" />
     <Compile Include="Entities\WebApiItem.cs" />
@@ -106,7 +101,9 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Diagnostics\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

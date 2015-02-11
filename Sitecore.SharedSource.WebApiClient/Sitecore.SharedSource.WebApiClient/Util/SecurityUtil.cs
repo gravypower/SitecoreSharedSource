@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Security.Cryptography;
 using System.Text;
-using Sitecore.SharedSource.WebApiClient.Diagnostics;
 using Sitecore.SharedSource.WebApiClient.Interfaces;
 
 namespace Sitecore.SharedSource.WebApiClient.Util
@@ -29,32 +28,23 @@ namespace Sitecore.SharedSource.WebApiClient.Util
                 throw new ArgumentNullException("key", "key cannot be null when encrypting headers");
             }
 
-            try
+            byte[] encrypted;
+
+            using (var rsa = new RSACryptoServiceProvider())
             {
-                byte[] encrypted;
+                var rsaKeyInfo = new RSAParameters
+                                        {
+                                            // set rsaKeyInfo to the public key values. 
+                                            Modulus = Encoding.UTF8.GetBytes(key.Modulus),
+                                            Exponent = Encoding.UTF8.GetBytes(key.Exponent)
+                                        };
 
-                using (var rsa = new RSACryptoServiceProvider())
-                {
-                    var rsaKeyInfo = new RSAParameters
-                                         {
-                                             // set rsaKeyInfo to the public key values. 
-                                             Modulus = Encoding.UTF8.GetBytes(key.Modulus),
-                                             Exponent = Encoding.UTF8.GetBytes(key.Exponent)
-                                         };
+                rsa.ImportParameters(rsaKeyInfo);
 
-                    rsa.ImportParameters(rsaKeyInfo);
-
-                    encrypted = rsa.Encrypt(Encoding.UTF8.GetBytes(value), false);
-                }
-
-                return Convert.ToBase64String(encrypted);
-            }
-            catch (Exception ex)
-            {
-                LogFactory.Error("Error encrypting header value", ex);
+                encrypted = rsa.Encrypt(Encoding.UTF8.GetBytes(value), false);
             }
 
-            return string.Empty;
+            return Convert.ToBase64String(encrypted);
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Sitecore.SharedSource.WebApiClient.Diagnostics;
 using Sitecore.SharedSource.WebApiClient.Interfaces;
 using Sitecore.SharedSource.WebApiClient.Util;
 
@@ -99,20 +98,12 @@ namespace Sitecore.SharedSource.WebApiClient.Data
                 throw new InvalidOperationException("You cannot build a web service URI with an invalid data query");
             }
 
-            try
-            {
-                var uriSuffix = string.Format("{0}/-/item/v{1}/-/actions/{2}?", hostName.TrimEnd('/'), ApiVersion, ActionName);
+            var uriSuffix = string.Format("{0}/-/item/v{1}/-/actions/{2}?", hostName.TrimEnd('/'), ApiVersion, ActionName);
 
-                var uri = string.Format("{0}{1}", uriSuffix, QueryStringParameters.ToQueryString());
+            var uri = string.Format("{0}{1}", uriSuffix, QueryStringParameters.ToQueryString());
 
-                return new Uri(uri);
-            }
-            catch (Exception ex)
-            {
-                LogFactory.Error("Could not build a URI for the data query", ex);
-            }
-
-            return null;
+            return new Uri(uri);
+          
         }
 
         /// <summary>

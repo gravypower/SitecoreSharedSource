@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Net;
 using System.Text;
-using Sitecore.SharedSource.WebApiClient.Diagnostics;
 using Sitecore.SharedSource.WebApiClient.Interfaces;
 using Sitecore.SharedSource.WebApiClient.Net;
 using Sitecore.SharedSource.WebApiClient.Util;
@@ -80,19 +79,13 @@ namespace Sitecore.SharedSource.WebApiClient.Data
 
             var key = GetPublicKey();
 
-            if (key != null)
-            {
-                request.Headers.Add(Structs.AuthenticationHeaders.UserName,
-                                    SecurityUtil.EncryptHeaderValue(Credentials.UserName, key));
-                request.Headers.Add(Structs.AuthenticationHeaders.Password,
-                                    SecurityUtil.EncryptHeaderValue(Credentials.Password, key));
-                request.Headers.Add(Structs.AuthenticationHeaders.Encrypted, "1");
-            }
-            else
-            {
-                LogFactory.Warn("Could not retrieve a public key to send encypted headers, authentication headers were not passed with the request");
-            }
+            request.Headers.Add(Structs.AuthenticationHeaders.UserName,
+                SecurityUtil.EncryptHeaderValue(Credentials.UserName, key));
+            request.Headers.Add(Structs.AuthenticationHeaders.Password,
+                SecurityUtil.EncryptHeaderValue(Credentials.Password, key));
+            request.Headers.Add(Structs.AuthenticationHeaders.Encrypted, "1");
         }
+
 
         /// <summary>
         /// Creates the request.
@@ -102,22 +95,14 @@ namespace Sitecore.SharedSource.WebApiClient.Data
         {
             var request = CreateRequest(uri, type);
 
-            try
-            {
-                byte[] buffer = Encoding.UTF8.GetBytes(postData);
+            byte[] buffer = Encoding.UTF8.GetBytes(postData);
 
-                request.ContentLength = buffer.Length;
+            request.ContentLength = buffer.Length;
 
-                var requestStream = request.GetRequestStream();
+            var requestStream = request.GetRequestStream();
 
-                requestStream.Write(buffer, 0, buffer.Length);
-                requestStream.Close();
-            }
-            catch (Exception ex)
-            {
-                LogFactory.Error("Could not add post data to the HttpWebRequest", ex);
-            }
-
+            requestStream.Write(buffer, 0, buffer.Length);
+            requestStream.Close();
             return request;
         }
 

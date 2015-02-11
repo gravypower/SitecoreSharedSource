@@ -3,11 +3,10 @@ using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Xml.Serialization;
-using Sitecore.SharedSource.WebApiClient.Diagnostics;
+using Newtonsoft.Json;
 using Sitecore.SharedSource.WebApiClient.Interfaces;
 using Sitecore.SharedSource.WebApiClient.Net;
 using Sitecore.SharedSource.WebApiClient.Util;
-using Newtonsoft.Json;
 
 namespace Sitecore.SharedSource.WebApiClient.Data
 {
@@ -94,9 +93,7 @@ namespace Sitecore.SharedSource.WebApiClient.Data
                     {
                         var sReader = new StreamReader(stream);
 
-                        try
-                        {
-
+                      
                             switch (responseFormat)
                             {
                                 case ResponseFormat.Json:
@@ -107,8 +104,7 @@ namespace Sitecore.SharedSource.WebApiClient.Data
                                     break;
                             }
 
-                            if (scResponse != null)
-                            {
+                           
                                 scResponse.Info = new SitecoreWebResponseInfo
                                                       {
                                                           Uri = request.RequestUri,
@@ -117,19 +113,8 @@ namespace Sitecore.SharedSource.WebApiClient.Data
 
                                 scResponse.StatusDescription = response.StatusDescription;
 
-                                LogFactory.Info(string.Format("{0}: {1} - {2}", request.Method,
-                                                              scResponse.Info.ResponseTime,
-                                                              scResponse.Info.Uri.PathAndQuery));
-                            }
-                            else
-                            {
-                                LogFactory.Warn("Could not convert deserialized response to IBaseResponse");
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            LogFactory.Error("Error deserializing the web service response", ex);
-                        }
+                                
+                           
                     }
                 }
             }
@@ -155,7 +140,6 @@ namespace Sitecore.SharedSource.WebApiClient.Data
                     }
                 }
 
-                LogFactory.Error("Web exception encountered when accessing the web service", ex);
             }
             catch (Exception ex)
             {
@@ -165,8 +149,6 @@ namespace Sitecore.SharedSource.WebApiClient.Data
                 {
                     scResponse.StatusCode = HttpStatusCode.InternalServerError;
                 }
-
-                LogFactory.Error("Error accessing the web service", ex);
             }
 
             return scResponse;
